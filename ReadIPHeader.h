@@ -1,7 +1,7 @@
 #ifndef READ_IP_HEADER_H
 #define READ_IP_HEADER_H
 
-#include <iostream>
+//#include <iostream>
 #include <string>
 #include <memory>
 #include <netinet/ip.h>
@@ -12,8 +12,8 @@ typedef struct ip IP;
 class ReadIPHeader
 {
 private:
-	std::unique_ptr<u_char> start_header_;
-	std::unique_ptr<IP> ip_header_;
+	//std::unique_ptr<u_char> start_header_;
+	std::shared_ptr<IP> ip_header_;
 	char source_ip_ [INET_ADDRSTRLEN];
 	char dest_ip_ [INET_ADDRSTRLEN];
 	std::string ip_protocol_;
@@ -24,7 +24,7 @@ public:
 	inline std::string get_dest_ip(){return std::string(dest_ip_);}
 	inline std::string get_ip_protocol(){return ip_protocol_;}
 	inline int get_ip_header_size(){return size_;}
-	~ReadIPHeader();
+	//~ReadIPHeader();
 	
 };
 

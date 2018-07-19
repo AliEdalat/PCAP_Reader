@@ -5,12 +5,12 @@
 #include <netinet/udp.h>
 typedef struct udphdr UDPHR; 
 
-class ReadUDPHeader:public ReadInternetProtocol
+class ReadUDPHeader : public ReadInternetProtocol
 {
 private:
-	std::unique_ptr<UDPHR> udp_header_;
+	std::shared_ptr<UDPHR> udp_header_;
 public:
-	ReadUDPHeader(const u_char* start_header , int prev_header_size);
+	ReadUDPHeader(const u_char* start_header, int prev_header_size, int pkthdr_len);
 	//~ReadUDPHeader();
 	
 };

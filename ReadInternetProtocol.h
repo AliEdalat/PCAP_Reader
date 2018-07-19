@@ -1,9 +1,10 @@
 #ifndef READ_INTERNET_PROTOCOL_H
 #define READ_INTERNET_PROTOCOL_H
 
-#include <iostream>
+//#include <iostream>
 #include <string>
 #include <memory>
+#include <netinet/in.h>
 
 
 class ReadInternetProtocol
@@ -13,9 +14,9 @@ protected:
 	int des_port_;
 	std::string data_string_;
 	int data_len_;
-	std::unique_ptr<u_char> data_;
+	std::shared_ptr<u_char> data_;
 	//u_char* data_;
-	std::unique_ptr<u_char> start_header_;
+	std::shared_ptr<u_char> start_header_;
 	//u_char* start_header_;
 	int prev_header_size_;
 	int pkthdr_len_;
@@ -25,13 +26,13 @@ protected:
 	// inline void set_source_port(int source_port){source_port_=source_port;}
 	// inline void set_des_port(int des_port){des_port_==des_port;}
 public:
-	ReadInternetProtocol(const u_char* start_header , int prev_header_size , int pkthdr_len);
+	ReadInternetProtocol(const u_char* start_header, int prev_header_size, int pkthdr_len);
 	//~ReadInternetProtocol();
-	inline u_char* get_data(){return data_;}
+	inline u_char* get_data(){return data_.get();}
 	inline int get_data_len(){return data_len_;}
 	inline std::string get_data_string(){return data_string_;}
-	inline int get_source_port(){return source_port_;}
-	inline int get_des_port(){return des_port_;}
+	inline u_int get_source_port(){return source_port_;}
+	inline u_int get_des_port(){return des_port_;}
 };
 
 #endif
