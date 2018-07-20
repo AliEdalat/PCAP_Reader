@@ -10,9 +10,9 @@ typedef struct tcphdr TCPHR;
 class ReadTCPHeader : public ReadInternetProtocol
 {
 private:
-	std::shared_ptr<TCPHR> tcp_header_;
+	std::shared_ptr<const TCPHR> tcp_header_;
 public:
-	ReadTCPHeader(const u_char* start_header, int prev_header_size, int pkthdr_len);
+	ReadTCPHeader(const u_char* start_header, int reminder);
 	//~ReadTCPHeader();
 	
 };

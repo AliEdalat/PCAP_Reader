@@ -13,13 +13,13 @@ class ReadIPHeader
 {
 private:
 	//std::unique_ptr<u_char> start_header_;
-	std::shared_ptr<IP> ip_header_;
+	std::shared_ptr<const IP> ip_header_;
 	char source_ip_ [INET_ADDRSTRLEN];
 	char dest_ip_ [INET_ADDRSTRLEN];
 	std::string ip_protocol_;
 	int size_;
 public:
-	ReadIPHeader(const u_char* start_header , int prev_header_size);
+	ReadIPHeader(const u_char* start_header);
 	inline std::string get_source_ip(){return std::string(source_ip_);}
 	inline std::string get_dest_ip(){return std::string(dest_ip_);}
 	inline std::string get_ip_protocol(){return ip_protocol_;}

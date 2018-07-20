@@ -8,9 +8,9 @@ typedef struct udphdr UDPHR;
 class ReadUDPHeader : public ReadInternetProtocol
 {
 private:
-	std::shared_ptr<UDPHR> udp_header_;
+	std::shared_ptr<const UDPHR> udp_header_;
 public:
-	ReadUDPHeader(const u_char* start_header, int prev_header_size, int pkthdr_len);
+	ReadUDPHeader(const u_char* start_header, int reminder);
 	//~ReadUDPHeader();
 	
 };

@@ -8,6 +8,7 @@
 #include "ReadEthernetHeader.h"
 #include "ReadIPHeader.h"
 #include "ReadTCPHeader.h"
+#include "ReadInternetProtocol.h"
 
 using namespace std;
 
@@ -39,24 +40,27 @@ void packetHandler(u_char *userData, const struct pcap_pkthdr* pkthdr, const u_c
   //const struct ether_header* ethernetHeader;
   //const struct ip* ipHeader;
   //const struct tcphdr* tcpHeader;
-  string sourceIp;
-  string destIp;
+  string sourceIp="";
+  string destIp="";
   u_int sourcePort, destPort;
   u_char *data;
   int dataLength = 0;
   string dataStr = "";
 
   //ethernetHeader = (struct ether_header*)packet;
-  ReadEthernetHeader REH (packet);
-  if (REH.get_ether_type() == "IP") {
+  ReadEthernetHeader* REH = new ReadEthernetHeader(packet);
+  ReadTCPHeader* RTCH = new ReadTCPHeader(packet + sizeof(struct ether_header) + sizeof(struct ip), (int)(pkthdr->len -(sizeof(struct ether_header) + sizeof(struct ip) + sizeof(struct tcphdr))));
+  ReadIPHeader* RIH = new ReadIPHeader(packet + sizeof(struct ether_header));
+
+  if (REH->get_ethernet_type() == "IP") {
       //ipHeader = (struct ip*)(packet + sizeof(struct ether_header));
       //inet_ntop(AF_INET, &(ipHeader->ip_src), sourceIp, INET_ADDRSTRLEN);
       //inet_ntop(AF_INET, &(ipHeader->ip_dst), destIp, INET_ADDRSTRLEN);
-      ReadIPHeader RIH (packet, int(sizeof(struct ether_header)));
-      sourceIp = RIH.get_source_ip();
-      destIp = RIH.get_dest_ip();
+      
+      sourceIp = RIH->get_source_ip();
+      destIp = RIH->get_dest_ip();
 
-      if (RIH.get_ip_protocol()== "TCP") {
+      if (RIH->get_ip_protocol()== "TCP") {
           //tcpHeader = (tcphdr*)(packet + sizeof(struct ether_header) + sizeof(struct ip));
           //sourcePort = ntohs(tcpHeader->source);
           //destPort = ntohs(tcpHeader->dest);
@@ -72,16 +76,19 @@ void packetHandler(u_char *userData, const struct pcap_pkthdr* pkthdr, const u_c
                   //dataStr += ".";
               //}
           //}
-          ReadTCPHeader RTH (packet,int(sizeof(struct ether_header) + sizeof(struct ip)) , pkthdr->len);
-          sourcePort=RTH.get_source_port();
-          destPort=RTH.get_des_port();
-          dataStr=RTH.get_data_string();
-          dataLength=RTH.get_data_len();
+          
+          sourcePort=RTCH->get_source_port();
+          destPort=RTCH->get_des_port();
+          dataStr=RTCH->get_data_string();
+          dataLength=RTCH->get_data_len();
           // print the results
           cout << sourceIp << ":" << sourcePort << " -> " << destIp << ":" << destPort << endl;
           if (dataLength > 0) {
-              cout << dataStr << endl;
+             cout << RTCH->get_data_string() << endl;
           }
       }
   }
+  delete REH;
+  delete RIH;
+  delete RTCH;
 }
